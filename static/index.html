@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nate 랭킹 뷰어</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <button
+      id="menuBtn"
+      class="menu-btn"
+      type="button"
+      aria-label="메뉴 열기"
+      aria-controls="sideDrawer"
+      aria-expanded="false"
+    >
+      <span class="menu-icon" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+    <div class="brand">뉴스나무 스타일 랭킹</div>
+    <div id="updatedAt" class="updated">불러오는 중...</div>
+  </header>
+
+  <div id="backdrop" class="backdrop" hidden></div>
+  <nav id="sideDrawer" class="side-drawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div class="drawer-title">메뉴</div>
+      <button id="closeDrawerBtn" class="close-drawer" type="button" aria-label="메뉴 닫기">
+        닫기
+      </button>
+    </div>
+    <div class="drawer-section">
+      <button class="drawer-tab" data-tab="ent" type="button">연예</button>
+      <button class="drawer-tab" data-tab="eco" type="button">경제</button>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section class="tabs" role="tablist" aria-label="카테고리 탭">
+      <button class="tab active" data-tab="ent" role="tab" aria-selected="true">연예</button>
+      <button class="tab" data-tab="eco" role="tab" aria-selected="false">경제</button>
+    </section>
+
+    <section>
+      <ul id="newsList" class="news-list"></ul>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
