@@ -107,6 +107,8 @@ def extract_rank_items(html: str, limit: int = MAX_RANK) -> list[dict]:
                 "url": link,
                 "nateUrl": link,
                 "thumbnail": thumb,
+                # og:image가 차단되어 깨질 때를 대비한 안전 폴백 이미지
+                "fallbackThumbnail": thumb,
             }
         )
 
@@ -190,6 +192,8 @@ def enrich_missing_thumbnails(items: list[dict]) -> None:
         og_image = fetch_og_image(item["url"])
         if og_image:
             item["thumbnail"] = og_image
+        else:
+            item["thumbnail"] = item.get("fallbackThumbnail", item.get("thumbnail", ""))
         time.sleep(0.08)
 
 

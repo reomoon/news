@@ -1,3 +1,5 @@
+import html
+
 import streamlit as st
 
 from app import ensure_dirs, refresh_rankings
@@ -75,9 +77,20 @@ def render_category(items: list[dict]) -> None:
         media = item.get("media", "출처 미상")
         url = item.get("url", "")
         thumb = item.get("thumbnail", "")
-        safe_title = title.replace("<", "&lt;").replace(">", "&gt;")
-        safe_media = media.replace("<", "&lt;").replace(">", "&gt;")
-        thumb_html = f'<img class="rank-thumb" src="{thumb}" alt="" />' if thumb else "<div></div>"
+        fallback_thumb = item.get("fallbackThumbnail", "")
+        safe_title = html.escape(title)
+        safe_media = html.escape(media)
+        safe_thumb = html.escape(thumb, quote=True)
+        safe_fallback_thumb = html.escape(fallback_thumb, quote=True)
+        if safe_thumb:
+            # 원문 썸네일 로딩 실패(핫링크 차단 등) 시 네이트 썸네일로 즉시 대체
+            thumb_html = (
+                f'<img class="rank-thumb" src="{safe_thumb}" alt="" '
+                f'referrerpolicy="no-referrer" '
+                f'onerror="this.onerror=null;this.src=\'{safe_fallback_thumb}\';" />'
+            )
+        else:
+            thumb_html = "<div></div>"
         link = url if url else "#"
 
         st.markdown(
