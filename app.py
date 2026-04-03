@@ -238,7 +238,7 @@ def read_cached_rankings() -> dict:
 
 
 def scheduler_loop() -> None:
-    # 1시간마다 데이터 파일(data/rankings.json)을 갱신한다.
+    # 5분마다 데이터 파일(data/rankings.json)을 갱신한다.
     # 주의: 이 방식은 "상시 실행 서버"에서만 유효하다.
     # Vercel 같은 서버리스 환경에서는 Vercel Cron을 쓰는 것이 맞다.
     while True:
@@ -247,7 +247,7 @@ def scheduler_loop() -> None:
             print(f"[scheduler] refreshed at {datetime.now().isoformat(timespec='seconds')}")
         except Exception as exc:
             print(f"[scheduler] refresh failed: {exc}")
-        time.sleep(3600)
+        time.sleep(300)
 
 
 class Handler(SimpleHTTPRequestHandler):

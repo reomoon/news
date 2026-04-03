@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 
-@st.cache_data(ttl=3600, show_spinner=False)
+@st.cache_data(ttl=300, show_spinner=False)
 def load_rankings() -> dict:
     ensure_dirs()
     return refresh_rankings()
@@ -110,7 +110,7 @@ def render_category(items: list[dict]) -> None:
 def main() -> None:
     apply_style()
     st.markdown('<div class="top-title">많이 본 랭킹</div>', unsafe_allow_html=True)
-    st.markdown('<div class="top-sub">연예/경제 1~20위 | 1시간 캐시 갱신</div>', unsafe_allow_html=True)
+    st.markdown('<div class="top-sub">연예/경제 1~20위 | 5분 캐시 갱신</div>', unsafe_allow_html=True)
 
     try:
         data = load_rankings()
