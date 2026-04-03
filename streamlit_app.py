@@ -26,7 +26,7 @@ def apply_style() -> None:
         .top-sub { color: #667085; font-size: 0.85rem; margin-bottom: 0.75rem; }
         .rank-row {
             display: grid;
-            grid-template-columns: 34px 1fr 84px;
+            grid-template-columns: 84px 1fr;
             gap: 10px;
             align-items: center;
             padding: 10px 0;
@@ -83,12 +83,11 @@ def render_category(items: list[dict]) -> None:
         st.markdown(
             f"""
             <div class="rank-row">
-              <div class="rank-num">{rank}</div>
+              <div>{thumb_html}</div>
               <div>
-                <p class="rank-title"><a href="{link}" target="_blank">{safe_title}</a></p>
+                <p class="rank-title"><span class="rank-num">{rank}</span> <a href="{link}" target="_blank">{safe_title}</a></p>
                 <div class="rank-meta">{safe_media}</div>
               </div>
-              <div>{thumb_html}</div>
             </div>
             """,
             unsafe_allow_html=True,
