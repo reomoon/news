@@ -20,6 +20,20 @@ python app.py
 
 - `http://localhost:8000`
 
+## Streamlit 배포/실행
+
+Streamlit Cloud에서는 `app.py`(내장 HTTP 서버)가 아니라 `streamlit_app.py`를 실행해야 합니다.
+
+```bash
+streamlit run streamlit_app.py
+```
+
+- Streamlit Cloud 설정
+  - Main file path: `streamlit_app.py`
+  - Python dependencies: `requirements.txt`
+
+`streamlit_app.py`는 `@st.cache_data(ttl=3600)`을 사용해 1시간 캐시 갱신을 수행합니다.
+
 ## API
 
 - `GET /api/rankings`
