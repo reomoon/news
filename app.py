@@ -115,6 +115,7 @@ def extract_rank_items(html: str, limit: int = MAX_RANK) -> list[dict]:
 
 
 def fetch_og_image(article_url: str) -> str:
+    # 원문 기사 HTML에서 og:image를 뽑아 고화질 썸네일로 사용한다.
     try:
         html = fetch_html(article_url, timeout=15)
     except URLError:
@@ -137,11 +138,15 @@ def fetch_og_image(article_url: str) -> str:
 
 
 def is_excluded_source_url(url: str) -> bool:
+    # 광고/내부 링크는 원문 링크 후보에서 제외한다.
     lower = url.lower()
     return any(token in lower for token in EXCLUDED_SOURCE_HOST_KEYWORDS)
 
 
 def resolve_original_article_url(nate_url: str) -> str:
+    # 네이트 뷰 페이지에서 실제 언론사 원문 링크를 찾는다.
+    # 1) 원문보기/기사원문 버튼 우선
+    # 2) 없으면 외부 링크 중 첫 번째를 사용
     try:
         html = fetch_html(nate_url, timeout=15)
     except URLError:
@@ -178,10 +183,13 @@ def resolve_original_article_url(nate_url: str) -> str:
 
 
 def enrich_missing_thumbnails(items: list[dict]) -> None:
+    # 썸네일 화질 개선:
+    # 기존에는 "썸네일이 없을 때만" og:image를 넣었는데,
+    # 이제는 항상 og:image를 먼저 시도하고 실패하면 기존 썸네일을 유지한다.
     for item in items:
-        if item.get("thumbnail"):
-            continue
-        item["thumbnail"] = fetch_og_image(item["url"])
+        og_image = fetch_og_image(item["url"])
+        if og_image:
+            item["thumbnail"] = og_image
         time.sleep(0.08)
 
 
@@ -226,6 +234,9 @@ def read_cached_rankings() -> dict:
 
 
 def scheduler_loop() -> None:
+    # 1시간마다 데이터 파일(data/rankings.json)을 갱신한다.
+    # 주의: 이 방식은 "상시 실행 서버"에서만 유효하다.
+    # Vercel 같은 서버리스 환경에서는 Vercel Cron을 쓰는 것이 맞다.
     while True:
         try:
             refresh_rankings()
@@ -268,11 +279,13 @@ class Handler(SimpleHTTPRequestHandler):
 def main() -> None:
     ensure_dirs()
     try:
+        # 서버 시작 직후 1회 즉시 갱신
         refresh_rankings()
         print("[startup] initial data fetch complete")
     except Exception as exc:
         print(f"[startup] initial fetch failed: {exc}")
 
+    # 백그라운드 스케줄러 시작 (상시 실행 환경용)
     t = threading.Thread(target=scheduler_loop, daemon=True)
     t.start()
 
